@@ -18,6 +18,10 @@ class EmailObfuscationFilter(logging.Filter):
         return True
 
 
+handlers = ["default", "rotating_file"]
+if isinstance(config, DevConfig):
+    handlers = ["default", "rotating_file", "logtail"]
+
 
 def  configure_logging()->None:
     dictConfig(
@@ -75,7 +79,7 @@ def  configure_logging()->None:
             "loggers":{
                 "uvicorn":{"handlers":["default", "rotating_file"],"level":"INFO"},
                 "storeapi":{
-                    "handlers":["default", "rotating_file", "logtail"],
+                    "handlers":handlers,
                     "level":"DEBUG" if isinstance(config, DevConfig) else "INFO",
                     "propagate":False
                 },
