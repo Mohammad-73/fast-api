@@ -2,10 +2,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from storeapi.routers.post import router as post_router
+from storeapi.logging_conf import configure_logging
 from storeapi.database import database
+
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
+    configure_logging()
     await database.connect()
     yield
     await database.disconnect()
