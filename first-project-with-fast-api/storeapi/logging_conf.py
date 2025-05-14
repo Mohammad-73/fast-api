@@ -2,7 +2,23 @@ from logging.config import dictConfig
 
 from storeapi.config import DevConfig,config
 
-filter = asgi_correlation_id.CorrelationIdFilter(uuid_length=8, default_value="-")
+def obfuscated(email: str, obfuscated_length:int)->str:
+    characters = email[:obfuscated_length]
+    first, last = email.split("@")
+    return characters + ("*" * (len(first) - obfuscated_length)) + "@" + last
+
+
+class EmailObfuscationFilter(logging.Filter):
+    def __init__(self, name= "", obfuscated_length: int=2)->None:
+        super().__init__(name)
+        self.obfuscated_length = obfuscated_length
+    def filter(self, record:logging.LogRecord) -> bool:
+        if "email" in record.__dict__:
+            record.email = obfuscated(record.email, self.obfuscated.length)
+        return True
+
+
+
 def  configure_logging()->None:
     dictConfig(
         {
@@ -13,6 +29,10 @@ def  configure_logging()->None:
                     "()": "asgi_correlation_id.CorrelationIdFilter",
                     "uuid_length": 8 if isinstance(config,DevConfig) else 32,
                     "default_value": "-"
+                },
+                "email_obfuscation": {
+                    "()": EmailObfuscationFilter,
+                    "obfuscated_length": 2 if isinstance(config, DevConfig) else 0,
                 }
             },
             "formatters":{
@@ -31,7 +51,8 @@ def  configure_logging()->None:
                 "default":{
                     "class":"rich.logging.RichHandler",
                     "level":"DEBUG",
-                    "formatter":"console"
+                    "formatter":"console",
+                    "filters": ["correlation_id", "email_obfuscation"]
                 },
                 "rotating_file": {
                     "class": "logging.handlers.RotatingFileHandler",
@@ -40,7 +61,8 @@ def  configure_logging()->None:
                     "filename": "storeapi.log",
                     "maxBytes": 1024 * 1024,
                     "backupCount": 5,
-                    "encoding": "utf8"
+                    "encoding": "utf8",
+                    "filters": ["correlation_id", "email_obfuscation"]
                 }
             },
             "loggers":{
