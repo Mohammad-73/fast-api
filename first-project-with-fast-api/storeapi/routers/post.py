@@ -44,7 +44,6 @@ async def get_all_posts():
 async def create_comment(comment: CommentIn):
     post = await find_post(comment.post_id)
     if not post:
-        logger.error(f"Post with id {comment.post_id} not found")
         raise HTTPException(status_code=404, detail="Post not found")
 
     data = comment.dict()
@@ -55,7 +54,12 @@ async def create_comment(comment: CommentIn):
 
 @router.get("/post/{post_id}/comment", response_model=list[Comment])
 async def get_comments_on_post(post_id: int):
+    logger.info("Getting comments on post")
+
     query= comment_table.select().where(comment_table.c.post_id == post_id)
+    
+    logger.debug(query)
+
     return await database.fetch_all(query)
 
 
