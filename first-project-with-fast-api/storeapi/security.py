@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 SECRET_KEY = "1234"
 ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(token="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"])
 
 

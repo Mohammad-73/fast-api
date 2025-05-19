@@ -1,8 +1,8 @@
-from typing import Optional
 from functools import lru_cache
-from pydantic_settings import BaseSettings
-from pydantic import Field
+from typing import Optional
+
 from pydantic import Extra
+from pydantic_settings import BaseSettings
 
 
 class BaseConfig(BaseSettings):
@@ -16,7 +16,7 @@ class BaseConfig(BaseSettings):
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
     DB_FORCE_ROLL_BACK: bool = False
-    DEV_LOGTAIL_API_KEY: Optional[str]= None
+    LOGTAIL_API_KEY: Optional[str] = None
 
 
 class DevConfig(GlobalConfig):
@@ -41,5 +41,6 @@ class TestConfig(GlobalConfig):
 def get_config(env_state: Optional[str]):
     configs = {"dev": DevConfig, "test": TestConfig, "prod": ProdConfig}
     return configs[env_state or "dev"]()  # fallback if ENV_STATE is None
+
 
 config = get_config(BaseConfig().ENV_STATE)

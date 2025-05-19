@@ -3,4 +3,4 @@ black
 isort
 pytest
 httpx
-pytest-moch
+pytest-mock

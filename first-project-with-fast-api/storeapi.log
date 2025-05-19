@@ -1,0 +1,2 @@
+{"asctime": "2025-05-19T10:19:01", "msecs": 758.0, "levelname": "INFO", "correlation_id": "-", "name": "uvicorn.error", "lineno": 62, "message": "Application startup complete."}
+{"asctime": "2025-05-19T10:19:01", "msecs": 760.0, "levelname": "INFO", "correlation_id": "-", "name": "uvicorn.error", "lineno": 62, "message": "Application startup complete."}
