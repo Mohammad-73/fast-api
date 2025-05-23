@@ -173,7 +173,10 @@ async def test_get_post_with_comments(
     response = await async_client.get(f"/posts/post/{created_post['id']}")
 
     assert response.status_code == 200
-    assert response.json() == {"post": created_post, "comments": [create_comment]}
+    assert response.json() == {
+        "post": {**created_post, "likes": 0},
+        "comments": [create_comment],
+    }
 
 
 @pytest.mark.anyio
@@ -181,5 +184,4 @@ async def test_get_missing_post_with_comments(
     async_client: AsyncClient, created_post: dict, created_comment: dict
 ):
     response = await async_client.get("/posts/post/2")
-
     assert response.status_code == 404
